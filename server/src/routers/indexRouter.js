@@ -6,8 +6,8 @@ const Indexrouter = (app)=>{
         return res.status(200).send("Hello")
     });
     Router.post("/create-user",userController.createUser)
-
-    return app.use("/",Router);
+    Router.post("/active-user",userController.activeUser)
+    return app.use("/api",Router);
 }
 
 module.exports = Indexrouter;

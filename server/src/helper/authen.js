@@ -3,13 +3,13 @@ const bcryptjs = require('bcryptjs')
 export const gennerateToken = (payload,secretKey,exp)=>{
     return JWT.sign(payload,secretKey,{expiresIn : exp})
 }
-export const hashPassWord = (password ="")=>{
+export const hashPassWord = async (password)=>{
     const saltRounds = 10;
     try {
-        const pass=  bcryptjs.hash(password, saltRounds);
+        const pass=  await bcryptjs.hash(password, saltRounds);
         return pass
     } catch (error) {
-        console.log(error);
+        console.log("hash password eror",error);
     }
 }
 export const comparePassword = (password,hashedPassword)=>{
