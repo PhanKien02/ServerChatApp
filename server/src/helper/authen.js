@@ -12,10 +12,9 @@ export const hashPassWord = async (password)=>{
         console.log("hash password eror",error);
     }
 }
-export const comparePassword = (password,hashedPassword)=>{
+export const comparePassword = async (password,hashedPassword)=>{
     try {
-        const checkpass=  bcryptjs.compare(password, hashedPassword)
-        return checkpass;
+        return await bcryptjs.compare(password, hashedPassword)
     } catch (error) {
         console.log(error);
     }

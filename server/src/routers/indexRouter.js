@@ -7,6 +7,7 @@ const Indexrouter = (app)=>{
     });
     Router.post("/create-user",userController.createUser)
     Router.post("/active-user",userController.activeUser)
+    Router.post("/login",userController.login)
     return app.use("/api",Router);
 }
 
