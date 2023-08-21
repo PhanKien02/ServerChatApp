@@ -1,0 +1,17 @@
+version: '3.0'
+services:
+  backend:
+    image: node:18-alpine
+    command: "npm install && npm install -g @babel/cli @babel/cli &&  npm run build-src"
+    ports:
+      - 127.0.0.1:8081:8081
+    working_dir: /chatApp/server
+    volumes:
+      - ./:/chatApp/server
+    environment:
+      PORT : 8080
+      URL_DATABASE :  
+      PRIVATE_KEY : "PHANKIEN11032002"
+      PRIVATE_RESET_KEY : "PHANKIEN11032002reset"
+    
+
