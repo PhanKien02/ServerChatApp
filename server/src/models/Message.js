@@ -6,7 +6,7 @@ const MessageSchema = new Schema({
         id_Receive :  {type : mongoose.Schema.ObjectId , ref : "users"},
         id_rooms :  {type : mongoose.Schema.ObjectId , ref : "rooms"},
         day_chat : Date,
-        message : { type : String ,unique : true}
+        message : String
 }, { timestamps: true })
 
 const MessageModel = mongoose.model("messages", MessageSchema);

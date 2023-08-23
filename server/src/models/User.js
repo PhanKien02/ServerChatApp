@@ -11,6 +11,10 @@ const UserSchema = new Schema({
         reset_key : String,
         active : Boolean,
         active_key : String,
+        friend :[{
+                id_friend : {type : mongoose.Schema.ObjectId},
+                active : Boolean
+        }]
 }, { timestamps: true })
 
 const userModel = mongoose.model("users", UserSchema);
