@@ -11,6 +11,8 @@ const Indexrouter = (app)=>{
 
     Router.post("/create-room",require("../controllers/roomController").createRoom)
     Router.post("/add-member",require("../controllers/roomController").addMembertoRoom)
+    Router.delete("/delete-room",require("../controllers/roomController").deleteRoom)
+    Router.put("/block-room",require("../controllers/roomController").blockRoom)
     return app.use("/api",Router);
 }
 

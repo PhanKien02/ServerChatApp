@@ -64,3 +64,62 @@ export const addMembertoRoom = async (req,res)=>{
         return res.status(200).json({message : "add member faild", data : {}})
     })
 }
+export const deleteRoom = async(req,res)=>{
+    const roomDelete = req.body;
+    const checkRoom= await Room.findOne({_id : roomDelete.idroom});
+    if(!checkRoom)
+        return res.status(400).json({message : "room not found", data : {}});
+    if(checkRoom.leader != roomDelete.user)
+        return res.status(400).json({message : "you can't delete this room", data : {}});
+    await Room.deleteOne({_id : checkRoom._id}).then(() =>{
+        return res.status(200).json({message : "delete this room success", data : {}});
+    }).catch(error =>{
+        console.log(error);
+        return res.status(400).json({message : "delete this room faild", data : {}});
+    })
+}
+export const blockRoom = async (req,res)=>{
+    const roomblock = req.body;
+    const checkRoom = await Room.findOne({_id : roomblock.idroom});
+    if(!checkRoom)
+        return res.status(400).json({message : "room not found", data : {}});
+    if(checkRoom.leader != roomblock.user)
+        return res.status(400).json({message : "you are not the leader of this group", data : {}});
+    if(checkRoom.active == false)
+        return res.status(400).json({message : "This room is locked", data : {}});
+    await  Room.updateOne({_id : checkRoom._id},{
+        $set:{
+            active : false
+        }
+    }).then(() =>{
+        return res.status(200).json({message : "block this room success", data : {}});
+    }).catch(error =>{
+        console.log(error);
+        return res.status(400).json({message : "block this room faild", data : {}});
+    })
+}
+export const unblockRoom = async (req,res)=>{
+    const roomblock = req.body;
+    const checkRoom = await Room.findOne({_id : roomblock.idroom});
+    if(!checkRoom)
+        return res.status(400).json({message : "room not found", data : {}});
+    if(checkRoom.leader != roomblock.user)
+        return res.status(400).json({message : "you are not the leader of this group", data : {}});
+    if(checkRoom.active == true )
+        return res.status(400).json({message : "This room has been activated", data : {}});
+
+    await  Room.updateOne({_id : checkRoom._id},{
+        $set:{
+            active : true
+        }
+    }).then(() =>{
+        return res.status(200).json({message : "block this room success", data : {}});
+    }).catch(error =>{
+        console.log(error);
+        return res.status(400).json({message : "block this room faild", data : {}});
+    })
+}
+export const getAllRoombyUser = (req,res)=>{
+    
+}
+
