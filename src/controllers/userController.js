@@ -108,42 +108,49 @@ export const activeUser = (req, res) => {
 };
 export const login = async (req, res) => {
     const login = req.body;
-    const userLogin = await User.findOne({ userName: login.email });
+    const userLogin = await User.findOne({ email: login.email });
     if (userLogin != null) {
         const checkpass = await comparePassword(
             login.password,
             userLogin.password
         );
         if (checkpass) {
-            const token = gennerateToken(
-                { user: userLogin.email },
-                process.env.PRIVATE_KEY,
-                "30s"
-            );
-            const resettoken = gennerateToken(
-                { user: userLogin.email },
-                process.env.PRIVATE_RESET_KEY,
-                "1d"
-            );
-            return res
-                .cookie("refreshtoken", resettoken, {
-                    secure: true,
-                    httpOnly: true,
-                    expires: new Date(Date.now() + 8 * 3600000),
-                })
-                .status(200)
-                .json({
-                    message: "login success",
-                    data: { user: userLogin, token: token }
-                });
+            try {
+                const token = gennerateToken(
+                    { user: userLogin.email },
+                    process.env.PRIVATE_KEY,
+                    "30s"
+                );
+                const resettoken = gennerateToken(
+                    { user: userLogin.email },
+                    process.env.PRIVATE_RESET_KEY,
+                    "1d"
+                );
+                return res
+                    .cookie("refreshtoken", resettoken, {
+                        secure: true,
+                        httpOnly: true,
+                        expires: new Date(Date.now() + 8 * 3600000),
+                    })
+                    .status(200)
+                    .json({
+                        message: "login success",
+                        data: { user: userLogin, token: token }
+                    });
+            } catch (error) {
+                console.log(error);
+                return res
+                .status(400)
+                .json({ message: "generate token faild", data: {} });
+            }
         } else {
             return res
                 .status(400)
-                .json({ message: "Incorrect username or password", data: {} });
+                .json({ message: "Incorrect email or password", data: {} });
         }
     } else {
         return res
             .status(400)
-            .json({ message: "Incorrect username or password", data: {} });
+            .json({ message: "Incorrect email or password", data: {} });
     }
 };
