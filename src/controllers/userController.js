@@ -9,15 +9,15 @@ import mailService from "../mail/mailService";
 export const createUser = async (req, res) => {
     const newUser = req.body;
     const checkUser = await User.find({
-        userName: newUser.userName,
         email: newUser.email,
-        active: true,
     });
     if (checkUser != null) {
         const password = await hashPassWord(newUser.password);
         const keyActive = gennerateKey();
+        console.log(keyActive);
         await User.create({
-            userName: newUser.userName,
+            firstName: newUser.firstName,
+            lastName: newUser.lastName,
             password: password,
             email: newUser.email,
             active_key: keyActive,
@@ -27,7 +27,7 @@ export const createUser = async (req, res) => {
                 try {
                     await mailService(
                         newUser.email,
-                        newUser.userName,
+                        `${newUser.firstName} ${newUser.lastName}`,
                         "active accout chatApp",
                         keyActive
                     );
@@ -53,7 +53,7 @@ export const createUser = async (req, res) => {
     } else {
         return res
             .status(400)
-            .json({ message: "Username or email already exists", data: {} });
+            .json({ message: "email already exists", data: {} });
     }
 };
 export const updateProfile = (req, res) => {
