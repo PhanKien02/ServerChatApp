@@ -108,7 +108,7 @@ export const activeUser = (req, res) => {
 };
 export const login = async (req, res) => {
     const login = req.body;
-    const userLogin = await User.findOne({ userName: login.userName });
+    const userLogin = await User.findOne({ userName: login.email });
     if (userLogin != null) {
         const checkpass = await comparePassword(
             login.password,
@@ -116,12 +116,12 @@ export const login = async (req, res) => {
         );
         if (checkpass) {
             const token = gennerateToken(
-                { user: userLogin.userName },
+                { user: userLogin.email },
                 process.env.PRIVATE_KEY,
                 "30s"
             );
             const resettoken = gennerateToken(
-                { user: userLogin.userName },
+                { user: userLogin.email },
                 process.env.PRIVATE_RESET_KEY,
                 "1d"
             );
