@@ -5,7 +5,12 @@ services:
       context: .
       dockerfile: dockerfile
     restart : unless-stopped
+    build: 
+      context: .
+      dockerfile: dockerfile
+    restart : unless-stopped
     ports:
+      - 8000:8000
       - 8000:8000
     environment:
       PORT : 8000
