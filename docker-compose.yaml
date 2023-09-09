@@ -1,17 +1,14 @@
 version: '3.0'
 services:
   backend:
-    image: node:18-alpine
-    command: "npm install && npm install -g @babel/cli @babel/cli &&  npm run build-src"
+    build: 
+      context: .
+      dockerfile: dockerfile
+    restart : unless-stopped
     ports:
-      - 127.0.0.1:8081:8081
-    working_dir: /chatApp/server
-    volumes:
-      - . .:/chatApp/server
+      - 8000:8000
     environment:
-      PORT : 8080
-      URL_DATABASE :  
+      PORT : 8000
+      URL_DATABASE : "mongodb+srv://root:root@cluster0.nbqvme4.mongodb.net/"
       PRIVATE_KEY : "PHANKIEN11032002"
       PRIVATE_RESET_KEY : "PHANKIEN11032002reset"
-    
-
