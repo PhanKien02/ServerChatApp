@@ -11,7 +11,8 @@ export const createUser = async (req, res) => {
     const checkUser = await User.find({
         email: newUser.email,
     });
-    if (checkUser != null) {
+    console.log("checkUser",checkUser);
+    if (checkUser == null) {
         const password = await hashPassWord(newUser.password);
         const keyActive = gennerateKey();
         console.log(keyActive);
@@ -45,7 +46,6 @@ export const createUser = async (req, res) => {
             })
             .catch((err) => {
                 console.log(err);
-
                 return res
                     .status(400)
                     .json({ message: "create user faild", data: {} });
