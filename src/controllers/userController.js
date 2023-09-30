@@ -7,20 +7,22 @@ import {
 import User from "../models/User";
 import mailService from "../mail/mailService";
 export const createUser = async (req, res) => {
-    const newUser = req.body;
-    const checkUser = await User.find({
-        email: newUser.email,
+    let register = req.body;
+    console.log(register);
+    const checkUser = await User.findOne({
+        email: register.email,
     });
     console.log("checkUser",checkUser);
     if (checkUser == null) {
-        const password = await hashPassWord(newUser.password);
+        console.log(register.password);
+        const password = await hashPassWord(register.password);
         const keyActive = gennerateKey();
         console.log(keyActive);
         await User.create({
-            firstName: newUser.firstName,
-            lastName: newUser.lastName,
+            firstName: register.firstName,
+            lastName: register.lastName,
             password: password,
-            email: newUser.email,
+            email: register.email,
             active_key: keyActive,
             active: false,
         })
