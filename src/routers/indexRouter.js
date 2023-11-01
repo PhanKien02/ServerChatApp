@@ -7,6 +7,7 @@ const Indexrouter = (app)=>{
     });
     Router.post("/create-user",userController.createUser)
     Router.post("/active-user",userController.activeUser)
+    Router.post("/reset-active-key",userController.resetActiveKey)
     Router.post("/login",userController.login)
 
     Router.post("/create-room",require("../controllers/roomController").createRoom)

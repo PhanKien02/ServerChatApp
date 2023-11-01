@@ -8,16 +8,12 @@ import User from "../models/User";
 import mailService from "../mail/mailService";
 export const createUser = async (req, res) => {
     let register = req.body;
-    console.log(register);
     const checkUser = await User.findOne({
         email: register.email,
     });
-    console.log("checkUser",checkUser);
     if (checkUser == null) {
-        console.log(register.password);
         const password = await hashPassWord(register.password);
         const keyActive = gennerateKey();
-        console.log(keyActive);
         await User.create({
             firstName: register.firstName,
             lastName: register.lastName,
@@ -86,27 +82,35 @@ export const updateProfile = (req, res) => {
                 .json({ message: "update profile faild", data: {} });
         });
 };
-export const activeUser = (req, res) => {
-    const useractive = req.body;
-    User.updateOne(
-        { active_key: useractive.active_key, active: false },
-        {
-            $set: {
-                active: true,
-            },
-        }
-    )
-        .then((response) => {
-            return res
-                .status(200)
-                .json({ message: "active user success", data: response });
-        })
-        .catch((error) => {
-            console.log(error);
-            return res
-                .status(400)
-                .json({ message: "active user faild", data: {} });
-        });
+export const activeUser = async (req, res) => {
+    const userActive = req.body;
+    const user = await User.findOne({active_key : userActive.active_key})
+    if(user!= null){
+        User.updateOne(
+            { active_key: userActive.active_key, active: false },
+            {
+                $set: {
+                    active: true,
+                },
+            }
+        )
+            .then((response) => {
+                return res
+                    .status(200)
+                    .json({ message: "active user success", data: {} });
+            })
+            .catch((error) => {
+                console.log(error);
+                return res
+                    .status(400)
+                    .json({ message: "active user faild", data: {} });
+            });
+    }
+    else{
+        return res
+                    .status(400)
+                    .json({ message: "key is incorrect", data: {} });
+    }
 };
 export const login = async (req, res) => {
     const login = req.body;
@@ -156,3 +160,38 @@ export const login = async (req, res) => {
             .json({ message: "Incorrect email or password", data: {} });
     }
 };
+export const resetActiveKey = async(req,res)=>{
+    const userReset = req.body;
+    const keyActive = gennerateKey();
+    try {
+        const checkuser= await User.findOne({email : userReset.email,active:false});
+        if(checkuser){
+            checkuser.updateOne({email : userReset.email}, { $set :{active : keyActive}}).then( async(reseponse)=>{
+                await mailService(
+                    checkuser.email,
+                    `${checkuser.firstName} ${checkuser.lastName}`,
+                    "reset key chatApp",
+                    keyActive
+                );
+                return res.status(200).json({
+                    message: "reset active key success",
+                    data: {},
+                });
+            }).catch((error)=>{
+                console.log("error reset active key",error);
+                return res
+                .status(400)
+                .json({ message: "reset active key faild", data: {} });
+            })
+        }
+        else{
+            return res
+        .status(400)
+        .json({ message: "user not found", data: {} });
+        }
+    } catch (error) {
+        return res
+            .status(400)
+            .json({ message: "reset active key faild", data: {} });
+    }
+}
